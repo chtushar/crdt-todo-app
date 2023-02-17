@@ -1,12 +1,23 @@
 import React from "react"
 import { createServerSupabaseClient, User } from "@supabase/auth-helpers-nextjs"
 import type { GetServerSidePropsContext } from "next"
+import axios from "axios"
 
 const Boards = ({ user }:{ user: User }) => {
+    
+    const handleSignOut = async (event: React.MouseEvent) => {
+        event.preventDefault()
+        await axios.get("/api/auth/sign_out")
+    }
 
     return (
         <div>
-            <h1>Boards</h1>
+            <div>
+                <h1>Boards</h1>
+                <button onClick={handleSignOut}>
+                    SignOut
+                </button>
+            </div>
             <p>Hi {user.email}</p>
         </div>
     )
