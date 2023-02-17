@@ -2,10 +2,11 @@ import React from "react"
 import { createServerSupabaseClient, User } from "@supabase/auth-helpers-nextjs"
 import type { GetServerSidePropsContext } from "next"
 import axios from "axios"
-import Board from "@/components/Board"
+import AllBoards from "@/components/AllBoards"
+import AllBoardsProvider from "@/contexts/AllBoardsContext"
 
 const Boards = ({ user }:{ user: User }) => {
-    
+
     const handleSignOut = async (event: React.MouseEvent) => {
         event.preventDefault()
         await axios.get("/api/auth/sign_out")
@@ -21,7 +22,9 @@ const Boards = ({ user }:{ user: User }) => {
             </div>
             <p>Hi {user.email}</p>
             <div>
-                <Board />
+                <AllBoardsProvider userId={user.id}>
+                    <AllBoards />
+                </AllBoardsProvider>
             </div>
         </div>
     )

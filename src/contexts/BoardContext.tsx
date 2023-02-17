@@ -1,8 +1,7 @@
 import React from "react"
 import useForceUpdate from "../hooks/useForceUpdate";
-import { useYDoc, useYDocProviders } from "./YDocContext";
-
-const boardName = 'yjs-todos';
+import { useTodosYDoc, useTodosYDocProviders } from "./TodosYDocContext";
+import { useYDoc } from "./YDocContext";
 
 export interface Todo {
     id: number;
@@ -23,22 +22,32 @@ const BoardContext = React.createContext<BoardContextType>({
 
 const reducer = (state: Todo[], action: any) => {
     switch (action.type) {
-        case "ADD_TODO":
+        case "ADD":
             return [...state, action.payload];
-        case "REMOVE_TODO":
+        case "REMOVE":
             return state.filter((todo: Todo) => todo.id !== action.payload);
         default:
             return state;
     }
 }
 
-const BoardProvider = ({ children }: any) => {
+const BoardProvider = ({ children, boardId }: any) => {
+    const hasSetBoard = React.useRef(false);
     const [board, dispatch] = React.useReducer(reducer, []);
-    const { yDoc } = useYDoc();
+    const { yDoc } = useYDoc()
+    const { todosYDoc } = useTodosYDoc();
     const forceUpdate = useForceUpdate();
-    useYDocProviders(boardName, yDoc);
 
-    const boardArray = React.useMemo(() => yDoc?.getArray(boardName), [yDoc]);
+    React.useLayoutEffect(() => {
+        if (!hasSetBoard.current) {
+            yDoc.getMap().set(boardId, todosYDoc);
+            hasSetBoard.current = true;
+        }
+    }, [boardId, todosYDoc, yDoc]);
+
+    useTodosYDocProviders(boardId, todosYDoc);
+
+    const boardArray = React.useMemo(() => todosYDoc?.getArray(boardId), [todosYDoc, boardId]);
     
     React.useLayoutEffect(() => {
         boardArray.observe((event) => {
