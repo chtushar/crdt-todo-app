@@ -1,7 +1,5 @@
 import React from "react";
 import * as Y from "yjs";
-import { IndexeddbPersistence } from "y-indexeddb";
-import { WebrtcProvider } from "y-webrtc";
 
 type YDocContextType = {
     yDoc: Y.Doc;
@@ -33,20 +31,5 @@ export const useYDoc = () => {
     }
     return context;
 }
-
-export const useYDocProviders = (boardName: string, yDoc: Y.Doc) => {
-    const docInitiated = React.useRef(false);
-    const indexeddbPersistence = React.useRef<IndexeddbPersistence>();
-    const webrtcProvider = React.useRef<WebrtcProvider>();
-
-    React.useLayoutEffect(() => {
-        if (!docInitiated.current) {
-            docInitiated.current = true;
-            indexeddbPersistence.current = new IndexeddbPersistence(boardName, yDoc);
-            webrtcProvider.current = new WebrtcProvider(boardName, yDoc, { signaling: ["wss://signaling.yjs.dev"] });
-        }
-    }, []);
-
-};
 
 export default YDocProvider;

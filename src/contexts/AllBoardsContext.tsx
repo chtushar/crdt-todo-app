@@ -1,46 +1,29 @@
 import React from "react"
 import useForceUpdate from "../hooks/useForceUpdate";
-import { useYDoc, useYDocProviders } from "./YDocContext";
+import { Array as YArray } from "yjs";
+import { useYDoc } from "./YDocContext";
+import { useYDocProviders } from "../hooks/useYDocProviders";
 
 export interface Board {
-    id: number;
+    id: string;
     title: string;
 }
 
 type AllBoardsContextType = {
-    board: Board[] | null;
-    dispatch: React.Dispatch<any>;
-    allBoardsArray: any;
+    allBoardsArray: YArray<Board>;
 }
 
-const AllBoardsContext = React.createContext<AllBoardsContextType>({
-    board: null,
-    dispatch: () => null,
-    allBoardsArray: []
-});
-
-const reducer = (state: Board[], action: any) => {
-    switch (action.type) {
-        case "ADD":
-            return [...state, action.payload];
-        case "REMOVE":
-            return state.filter((todo: Board) => todo.id !== action.payload);
-        default:
-            return state;
-    }
-}
+const AllBoardsContext = React.createContext<AllBoardsContextType>({} as AllBoardsContextType);
 
 const AllBoardsProvider = ({ children, userId }: any) => {
-    const [board, dispatch] = React.useReducer(reducer, []);
     const { yDoc } = useYDoc();
     const forceUpdate = useForceUpdate();
     useYDocProviders(userId, yDoc);
 
-    const allBoardsArray = React.useMemo(() => yDoc?.getArray(userId), [yDoc, userId]);
+    const allBoardsArray = React.useMemo(() => yDoc?.getArray<Board>(userId), [yDoc, userId]);
     
     React.useLayoutEffect(() => {
         allBoardsArray.observe((event) => {
-            console.log('boardArray event', event);
             forceUpdate();
         });
     }, []);
@@ -48,8 +31,6 @@ const AllBoardsProvider = ({ children, userId }: any) => {
 
     return (
         <AllBoardsContext.Provider value={{ 
-            board, 
-            dispatch,
             allBoardsArray 
         }}>
             {children}

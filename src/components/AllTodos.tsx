@@ -5,7 +5,7 @@ import { Todo, useBoard } from '@/contexts/BoardContext'
 import useForceUpdate from "@/hooks/useForceUpdate"
 
 const AllTodos = () => {
-    const { boardArray, dispatch } = useBoard()
+    const { boardArray } = useBoard()
     const forceUpdate = useForceUpdate()
 
     React.useLayoutEffect(() => {
@@ -23,10 +23,6 @@ const AllTodos = () => {
             id: nanoid(10),
             title
         }
-        dispatch({
-            type: "ADD",
-            payload
-        });
         boardArray.push([payload]);
     }
 

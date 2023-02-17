@@ -5,7 +5,7 @@ import Link from "next/link"
 import React from "react"
 
 const AllBoard = () => {
-    const { allBoardsArray, dispatch } = useAllBoards()
+    const { allBoardsArray } = useAllBoards()
     const forceUpdate = useForceUpdate()
     
     React.useLayoutEffect(() => {
@@ -23,10 +23,6 @@ const AllBoard = () => {
             id: nanoid(10),
             title
         }
-        dispatch({
-            type: "ADD",
-            payload
-        });
         allBoardsArray.push([payload]);
     }
 
