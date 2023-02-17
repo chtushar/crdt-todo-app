@@ -28,12 +28,10 @@ const AllTodos = () => {
 
     return (
         <ul>
-            {boardArray.toArray().map((board: Todo) => {
+            {boardArray.toArray().map((todo: Todo) => {
                 return (
-                    <li key={board.id}>
-                        <Link href={`/boards/${board.id}`}>
-                            {board.title}
-                        </Link>
+                    <li key={todo.id}>
+                            {todo.title}
                     </li>
                 )              
             })}
