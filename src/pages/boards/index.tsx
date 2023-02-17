@@ -2,6 +2,7 @@ import React from "react"
 import { createServerSupabaseClient, User } from "@supabase/auth-helpers-nextjs"
 import type { GetServerSidePropsContext } from "next"
 import axios from "axios"
+import Board from "@/components/Board"
 
 const Boards = ({ user }:{ user: User }) => {
     
@@ -19,6 +20,9 @@ const Boards = ({ user }:{ user: User }) => {
                 </button>
             </div>
             <p>Hi {user.email}</p>
+            <div>
+                <Board />
+            </div>
         </div>
     )
 }
