@@ -1,49 +1,80 @@
-import { useAllBoards, Board } from "@/contexts/AllBoardsContext"
-import useForceUpdate from "@/hooks/useForceUpdate"
-import { nanoid } from "nanoid"
-import Link from "next/link"
 import React from "react"
+import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation"
+import clsx from "clsx"
+import { useAtom } from "jotai"
+import { keyboardAtom } from "@/atoms/keyboard";
+import { nanoid } from "nanoid"
+import { useAllBoards, Board } from "@/contexts/AllBoardsContext"
+import Form from "./Form";
+import Todos from "./Todos";
+// import useForceUpdate from "@/hooks/useForceUpdate"
+// import Link from "next/link"
+// import React from "react"
+
+const items = [
+    {
+        id: "1",
+        title: "Design",
+    },
+    {
+        id: "2",
+        title: "Engineering",
+    },
+    {
+        id: "3",
+        title: "Product",
+    },
+    {
+        id: "4",
+        title: "Marketing",
+    },
+]
 
 const AllBoard = () => {
-    const { allBoardsArray } = useAllBoards()
-    const forceUpdate = useForceUpdate()
+    const [keyboard] = useAtom(keyboardAtom)
+    const { ref, selectedIndex } = useKeyboardNavigation({
+        enabled: keyboard.metaKey === true,
+        nextKey: "ArrowRight",
+        prevKey: "ArrowLeft",
+    });
+    // const { handleAddBoard } = useAllBoards()
+    // const forceUpdate = useForceUpdate()
     
-    React.useLayoutEffect(() => {
-        allBoardsArray.observe(() => {
-            forceUpdate()
-        });
-    }, []);
-
-    const handleAddBoard = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // @todo Fix type error
-        //@ts-ignore
-        const title = e.currentTarget[0].value;
-        const payload = {
-            id: nanoid(10),
-            title
-        }
-        allBoardsArray.push([payload]);
-    }
+    // React.useLayoutEffect(() => {
+    //     allBoardsArray.observe(() => {
+    //         forceUpdate()
+    //     });
+    // }, []);
 
     return (
-        <ul>
-            {allBoardsArray.toArray().map((board: Board) => {
-                return (
-                    <li key={board.id}>
-                        <Link href={`/boards/${board.id}`}>
-                            {board.title}
-                        </Link>
-                    </li>
-                )              
-            })}
-            <li>
-                <form className="flex gap-2" onSubmit={handleAddBoard}>
-                    <input className="border border-neutral-200" type="text" />
-                    <button type="submit">Add Board</button>
-                </form>
-            </li>
-        </ul>
+        <div className="w-full flex flex-col justify-center align-center gap-8">
+            <ul ref={ref as React.RefObject<HTMLUListElement>} className="w-full flex flex-row justify-center align-center gap-1">
+                {items.map((item, index) => {
+                    return (
+                        <li key={item.id}>
+                            <Pill selected={index === selectedIndex}>
+                                {item.title}
+                            </Pill>
+                        </li>
+                    )    
+                })}
+            </ul>
+            <Todos boardId="asds"  />
+        </div>
+    )
+}
+
+const Pill = ({ children, selected = false }:{ children: React.ReactNode; selected?: boolean }) => {
+    return (
+        <button
+            className={clsx(
+                "m-1 px-4 py-2 text-center rounded-full text-neutral-500",
+                selected && "bg-rose-50 text-neutral-800"
+            )}
+            tabIndex={-1}
+        >
+            {children}
+        </button>
     )
 }
 

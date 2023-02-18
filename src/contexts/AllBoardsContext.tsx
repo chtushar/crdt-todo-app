@@ -1,38 +1,62 @@
 import React from "react"
-import useForceUpdate from "../hooks/useForceUpdate";
-import { Array as YArray } from "yjs";
-import { useYDoc } from "./YDocContext";
-import { useYDocProviders } from "../hooks/useYDocProviders";
+import { nanoid } from "nanoid";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export interface Board {
     id: string;
     title: string;
 }
 
-type AllBoardsContextType = {
-    allBoardsArray: YArray<Board>;
-}
+type AllBoardsContextType = any;
 
 const AllBoardsContext = React.createContext<AllBoardsContextType>({} as AllBoardsContextType);
 
 const AllBoardsProvider = ({ children, userId }: any) => {
-    const { yDoc } = useYDoc();
-    const forceUpdate = useForceUpdate();
-    useYDocProviders(userId, yDoc);
+    const hasSubscribed = React.useRef(false);
+    const supabaseClient = useSupabaseClient();
+    const channel = React.useMemo(() => {
+        const channel = supabaseClient?.channel(userId);
+        if (!hasSubscribed.current) {
+            console.log('subscribing');
+            channel?.on(
+            'broadcast', 
+            { event: 'ADD' },
+            (payload) => { console.log('received', payload) })
+            .subscribe(() => {
+                hasSubscribed.current = true;
+            });
+        }
+        
+        return channel;
+    }, [supabaseClient, userId]);
 
-    const allBoardsArray = React.useMemo(() => yDoc?.getArray<Board>(userId), [yDoc, userId]);
-    
-    React.useLayoutEffect(() => {
-        allBoardsArray.observe((event) => {
-            forceUpdate();
-        });
+    React.useEffect(() => {
+        console.log(supabaseClient.getChannels());
     }, []);
+
+    const handleAddBoard = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // @todo Fix type error
+        //@ts-ignore
+        const title = e.currentTarget[0].value;
+        const payload = {
+            id: nanoid(10),
+            title
+        }
+        channel?.send({
+            type: 'broadcast',
+            event: 'ADD',
+            payload
+        });
+    }
 
 
     return (
-        <AllBoardsContext.Provider value={{ 
-            allBoardsArray 
-        }}>
+        <AllBoardsContext.Provider 
+            value={{ 
+                handleAddBoard
+            }}
+        >
             {children}
         </AllBoardsContext.Provider>
     );

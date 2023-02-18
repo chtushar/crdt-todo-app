@@ -1,7 +1,8 @@
 import React from "react";
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider, Session } from '@supabase/auth-helpers-react'
-import YDocProvider from "@/contexts/YDocContext";
+import Layout from "./Layout";
+// import YDocProvider from "@/contexts/YDocContext";
 
 interface AllProvidersProps {
     children: React.ReactNode;
@@ -17,9 +18,11 @@ const AllProviders = ({ children, initialSupabaseSession }: AllProvidersProps) =
                 supabaseClient={supabaseClient}
                 initialSession={initialSupabaseSession}
             >
-                <YDocProvider>
+                <Layout>
+                {/* <YDocProvider> */}
                     {children}
-                </YDocProvider>
+                {/* </YDocProvider> */}
+                </Layout>
             </SessionContextProvider>
         </React.Fragment>
     )

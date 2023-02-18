@@ -7,26 +7,25 @@ import AllBoardsProvider from "@/contexts/AllBoardsContext"
 
 const Boards = ({ user }:{ user: User }) => {
 
-    const handleSignOut = async (event: React.MouseEvent) => {
-        event.preventDefault()
-        await axios.get("/api/auth/sign_out")
-    }
+    // const handleSignOut = async (event: React.MouseEvent) => {
+    //     event.preventDefault()
+    //     await axios.get("/api/auth/sign_out")
+    // }
 
     return (
-        <div>
-            <div>
+        <>
+            {/* <div>
                 <h1>Boards</h1>
                 <button onClick={handleSignOut}>
                     SignOut
                 </button>
-            </div>
-            <p>Hi {user.email}</p>
-            <div>
-                <AllBoardsProvider userId={user.id}>
+            </div> */}
+            <div className="w-full">
+                {/* <AllBoardsProvider userId={user.id}> */}
                     <AllBoards />
-                </AllBoardsProvider>
+                {/* </AllBoardsProvider> */}
             </div>
-        </div>
+        </>
     )
 }
 
