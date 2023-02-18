@@ -1,33 +1,12 @@
-import * as Y from 'yjs'
-import { SupabaseClient } from '@supabase/supabase-js'
-import { RealtimeChannel } from '@supabase/realtime-js'
-import { Observable } from 'lib0/observable'
+import { SupabaseClient } from "@supabase/supabase-js"
+import { YArray } from "yjs/dist/src/internals"
 
-export interface SupabaseProviderOptions {
-    client: SupabaseClient
-}
-
-export class SupabaseProvider extends Observable<string> {
-    private supabase: SupabaseClient
-    private roomName: string
-    private doc: Y.Doc
-    private channel: RealtimeChannel | null = null
-
-    constructor(roomName: string, yDoc: Y.Doc, options: SupabaseProviderOptions) {
-        super()
-        this.roomName = roomName
-        this.supabase = options.client
-        this.doc = yDoc
-
-        this.connect()
-    }
+export const initSupabase = <T>(yArray: YArray<T>, supabase: SupabaseClient, cb: () => void) => {
+    yArray.observe((event, transaction) => {
+        console.log(event.changes.deleted.size, event.changes.added.size)
+    });
     
-    async connect() {
-        this.channel = this.supabase.channel(`room:${this.roomName}`)
-    }
+    return () => {
 
-    async disconnect() {
-        this.channel?.unsubscribe()
     }
 }
-

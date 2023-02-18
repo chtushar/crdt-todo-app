@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import Form from "./Form"
 import { nanoid } from "nanoid"
 import useDocArray from "@/contexts/useDocArray"
@@ -11,7 +11,7 @@ enum TodoStatus {
     Done = 'done'
 } 
 interface Todo {
-    id: string;
+    uid: string;
     title: string;
     order: number;
     status: TodoStatus;
@@ -19,15 +19,14 @@ interface Todo {
 }
 
 const Todos = ({ boardId }: { boardId: string }) => {
-    const { selectedIndex, ref, reset } = useKeyboardNavigation({
-        enabled: true,
-        defaultSelectedIndex: -1,
-    })
-    const array = useDocArray<Todo>(boardId)
+    const { array, yDoc } = useDocArray<Todo>(boardId)
+    const textbarRef = React.useRef<HTMLInputElement>(null)
+    const [enableBoard, setEnableBoard] = useState<boolean>(false)
+    
     const handleAddTodo = (title: string) => {
         if (title === '') return
         const payload = {
-            id: nanoid(10),
+            uid: nanoid(10),
             title,
             order: 0,
             boardId,
@@ -35,10 +34,37 @@ const Todos = ({ boardId }: { boardId: string }) => {
         }
         array.push([payload]);
     }
-
-    const todos = React.useMemo(() => {
-        return array.toArray();
-    }, [array.length]);
+    
+    const handleDeleteTodo = (index: number) => {
+        array.delete(index)
+    }
+    
+    const toggleCheckbox = (todo: Todo, index: number) => {
+        const oldTodo = array.get(index)
+        const newTodo = {
+            ...oldTodo,
+            status: todo.status === TodoStatus.Todo ? TodoStatus.Done : TodoStatus.Todo
+        }
+        
+        yDoc.transact(() => {
+            array.delete(index)
+            array.insert(index, [newTodo])
+        })
+    }
+    
+    const todos = array.toArray()
+    
+    const { selectedIndex, ref, reset } = useKeyboardNavigation({
+        enabled: true,
+        defaultSelectedIndex: -1,
+        onEnter: (index: number) => {
+            // @TODO: Fix wrong behaviour
+            if (textbarRef.current?.value === '') {
+                const todo = todos[index]
+                toggleCheckbox(todo, index)
+            }
+        }
+    })
 
     React.useEffect(() => {
         reset()
@@ -46,12 +72,34 @@ const Todos = ({ boardId }: { boardId: string }) => {
 
     return (
         <>
-            <Form onSubmit={handleAddTodo} />
+            <Form
+                onSubmit={handleAddTodo}
+                textbarRef={textbarRef}
+            />
             <ul ref={ref as React.RefObject<HTMLUListElement>}>
                 {todos.map((todo: Todo, index: number) => {
                     return (
-                        <li key={todo.id} className={clsx(selectedIndex === index && "bg-rose-200")}>
-                            {todo.title}
+                        <li 
+                            key={todo.uid} 
+                            className={clsx(
+                                selectedIndex === index && "bg-rose-200",
+                                "flex justify-between items-center"
+                            )}
+                        >
+                            <span>
+                                {todo.title}
+                            </span>
+                            <span>
+                                <button onClick={() => handleDeleteTodo(index)}>
+                                    Delete
+                                </button>
+                                <input 
+                                    type="checkbox" 
+                                    name="status" 
+                                    checked={todo.status === TodoStatus.Done}
+                                    onChange={() => toggleCheckbox(todo, index)}
+                                />
+                            </span>
                         </li>
                     )
                 })}

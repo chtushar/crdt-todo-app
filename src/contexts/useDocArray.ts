@@ -6,7 +6,7 @@ import React from "react";
 const useDocArray = <T = any>(docId: string) => {
     const { yDoc } = useDoc();
     const forceUpdate = useForceUpdate();
-    useYDocProviders(docId, yDoc);
+    useYDocProviders<T>(docId, yDoc);
 
     const array = React.useMemo(() => {
         return yDoc.getArray<T>(docId);
@@ -19,7 +19,7 @@ const useDocArray = <T = any>(docId: string) => {
         }
     },[array, forceUpdate]);
 
-    return array;
+    return { array, yDoc };
 };
 
 export default useDocArray;

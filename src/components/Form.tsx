@@ -1,10 +1,16 @@
 import React from "react";
 
-const Form = ({ onSubmit, closeModal = false }:{ onSubmit: (title: string) => void; closeModal?: boolean }) => {
+const Form = ({ 
+        onSubmit, 
+        textbarRef
+    }:{ 
+        onSubmit: (title: string) => void;
+        textbarRef?: React.RefObject<HTMLInputElement> | null;
+    }) => {
     const [title, setTitle] = React.useState<string>('');
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         onSubmit(title);
         setTitle('');
     }
@@ -12,6 +18,7 @@ const Form = ({ onSubmit, closeModal = false }:{ onSubmit: (title: string) => vo
     return (
         <form className="w-full flex gap-4" onSubmit={handleSubmit}>
             <input
+                ref={textbarRef}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 name="title" 
