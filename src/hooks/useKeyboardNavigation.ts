@@ -5,15 +5,17 @@ import { keyboardAtom } from "@/atoms/keyboard";
 export const useKeyboardNavigation = ({
     nextKey = "ArrowDown",
     prevKey = "ArrowUp",
-    enabled = false
+    enabled = false,
+    defaultSelectedIndex = 0
 }: {
     nextKey?: KeyboardEvent["key"];
     prevKey?: KeyboardEvent["key"];
     enabled: boolean;
+    defaultSelectedIndex?: number;
 }) => {
     const root = React.useRef<HTMLElement>(null);
     const [keyboard] = useAtom(keyboardAtom);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [selectedIndex, setSelectedIndex] = React.useState(defaultSelectedIndex);
 
     React.useEffect(() => {
         if (enabled && root.current) {
@@ -34,9 +36,14 @@ export const useKeyboardNavigation = ({
         setSelectedIndex(index);
     }
 
+    const reset = () => {
+        setSelectedIndex(defaultSelectedIndex);
+    }
+
     return {
         ref: root,
         selectedIndex,
-        handleSelect
+        handleSelect,
+        reset
     }
 }

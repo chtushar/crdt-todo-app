@@ -1,6 +1,7 @@
 import React from "react";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { WebrtcProvider } from "y-webrtc";
+
 import { Doc } from "yjs";
 
 export const useYDocProviders = (room: string, yDoc: Doc) => {
@@ -12,7 +13,7 @@ export const useYDocProviders = (room: string, yDoc: Doc) => {
         if (!docInitiated.current && typeof yDoc !== 'undefined') {
             docInitiated.current = true;
             indexeddbPersistence.current = new IndexeddbPersistence(room, yDoc);
-            webrtcProvider.current = new WebrtcProvider(room, yDoc, { signaling: ["wss://signaling.yjs.dev"] });
+            webrtcProvider.current = new WebrtcProvider(room, yDoc, { signaling: ["ws://localhost:4444"] });
         }
 
         return () => {
