@@ -29,5 +29,11 @@ export class SupabaseProvider extends Observable<string> {
     async disconnect() {
         this.channel?.unsubscribe()
     }
+
+    destory () {
+        if(this.channel) {
+            this.disconnect()
+        }
+    }
 }
 
