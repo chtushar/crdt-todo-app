@@ -9,7 +9,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     const [,setKey] = useAtom(keyboardAtom);
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.metaKey) {
                 e.preventDefault()

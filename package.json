@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "server": "node node_modules/y-webrtc/bin/server.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
@@ -14,6 +15,7 @@
     "@radix-ui/react-dialog": "^1.0.2",
     "@supabase/auth-helpers-nextjs": "^0.5.4",
     "@supabase/auth-helpers-react": "^0.3.1",
+    "@supabase/realtime-js": "^2.6.0",
     "@supabase/supabase-js": "^2.8.0",
     "@types/node": "18.13.0",
     "@types/react": "18.0.28",
@@ -23,6 +25,7 @@
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "jotai": "^2.0.2",
+    "lib0": "^0.2.62",
     "nanoid": "^4.0.1",
     "next": "13.1.6",
     "react": "18.2.0",
@@ -30,6 +33,7 @@
     "tailwind-scrollbar-hide": "^1.1.7",
     "typescript": "4.9.5",
     "y-indexeddb": "^9.0.9",
+    "y-protocols": "^1.0.5",
     "y-webrtc": "^10.2.4",
     "yjs": "^13.5.46"
   },

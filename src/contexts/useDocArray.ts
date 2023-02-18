@@ -13,10 +13,11 @@ const useDocArray = <T = any>(docId: string) => {
     },[yDoc, docId]);
 
     React.useEffect(() => {
-        array.observe((event, transaction) => {
-            forceUpdate();
-        });
-    },[]);
+        array.observe(forceUpdate);
+        return () => {
+            array.unobserve(forceUpdate);
+        }
+    },[array, forceUpdate]);
 
     return array;
 };
