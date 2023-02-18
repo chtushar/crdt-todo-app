@@ -2,10 +2,10 @@ import React from "react";
 import * as Y from "yjs";
 
 type TodosYDocContextType = {
-    todosYDoc: Y.Doc;
+    yDoc: Y.Doc;
 };
 
-const YDocContext = React.createContext<{ todosYDoc: Y.Doc }>({} as TodosYDocContextType);
+const YDocContext = React.createContext<{ yDoc: Y.Doc }>({} as TodosYDocContextType);
 
 interface YDocProviderProps {
     children: React.ReactNode;
@@ -13,17 +13,17 @@ interface YDocProviderProps {
 
 
 // @todo - move this to a hook
-const todosYDoc = new Y.Doc();
+const yDoc = new Y.Doc();
 
-const YDocProvider = ({ children }: YDocProviderProps) => {    
+const DocProvider = ({ children }: YDocProviderProps) => {    
     return (
-        <YDocContext.Provider value={{ todosYDoc }}>
+        <YDocContext.Provider value={{ yDoc }}>
             {children}
         </YDocContext.Provider>
     );
 }
 
-export const useTodosYDoc = () => {
+export const useDoc = () => {
     const context = React.useContext(YDocContext);
     if (context === undefined) {
         throw new Error("useYDoc must be used within a YDocProvider");
@@ -31,4 +31,4 @@ export const useTodosYDoc = () => {
     return context;
 }
 
-export default YDocProvider;
+export default DocProvider;

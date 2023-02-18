@@ -3,7 +3,6 @@ import { createServerSupabaseClient, User } from "@supabase/auth-helpers-nextjs"
 import type { GetServerSidePropsContext } from "next"
 import axios from "axios"
 import AllBoards from "@/components/AllBoards"
-import AllBoardsProvider from "@/contexts/AllBoardsContext"
 
 const Boards = ({ user }:{ user: User }) => {
 
@@ -13,20 +12,11 @@ const Boards = ({ user }:{ user: User }) => {
     }
 
     return (
-        <div>
-            <div>
-                <h1>Boards</h1>
-                <button onClick={handleSignOut}>
-                    SignOut
-                </button>
+        <>
+            <div className="w-full">
+                <AllBoards userId={user.id} />
             </div>
-            <p>Hi {user.email}</p>
-            <div>
-                <AllBoardsProvider userId={user.id}>
-                    <AllBoards />
-                </AllBoardsProvider>
-            </div>
-        </div>
+        </>
     )
 }
 

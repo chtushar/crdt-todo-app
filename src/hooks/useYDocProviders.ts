@@ -9,7 +9,7 @@ export const useYDocProviders = (room: string, yDoc: Doc) => {
     const webrtcProvider = React.useRef<WebrtcProvider>();
 
     React.useLayoutEffect(() => {
-        if (!docInitiated.current) {
+        if (!docInitiated.current && typeof yDoc !== 'undefined') {
             docInitiated.current = true;
             indexeddbPersistence.current = new IndexeddbPersistence(room, yDoc);
             webrtcProvider.current = new WebrtcProvider(room, yDoc, { signaling: ["wss://signaling.yjs.dev"] });
@@ -20,6 +20,6 @@ export const useYDocProviders = (room: string, yDoc: Doc) => {
             indexeddbPersistence.current?.destroy();
             webrtcProvider.current?.destroy();
         }
-    }, []);
+    }, [room, yDoc]);
 
 };
