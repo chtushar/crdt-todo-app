@@ -49,7 +49,7 @@ const AllBoard = ({ userId }:{ userId: string }) => {
                     <ul ref={ref as React.RefObject<HTMLUListElement>} className="w-full flex flex-row gap-1 whitespace-nowrap">
                         {boards.map((board: Board, index: number) => {
                             return (
-                                <li key={board.uid}>
+                                <li key={board.uid} tabIndex={-1} >
                                     <Pill 
                                         selected={index === selectedIndex} 
                                         onClick={() => handleSelect(index)}

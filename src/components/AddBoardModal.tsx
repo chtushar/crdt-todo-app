@@ -16,7 +16,7 @@ const AddBoardModal = ({ onSubmit }:{ onSubmit: (title: string) => void }) => {
             setIsOpen(open);
         }}>
             <Dialog.Trigger asChild>
-            <button className="inline-block bg-rose-600 rounded-full p-2 m-1 absolute">
+                <button className="inline-block bg-rose-600 rounded-full p-2 m-1 absolute">
                     <PlusIcon className="w-6 h-6 text-neutral-100" />
                 </button>
             </Dialog.Trigger>

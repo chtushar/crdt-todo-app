@@ -33,15 +33,28 @@ export const useKeyboardNavigation = ({
     const reset = () => {
         setSelectedIndex(defaultSelectedIndex);
     }
+
+    const focusSelected = (index: number) => {
+        if (root.current) {
+            const child = root.current.children[index];
+            if (child) {
+                (child as HTMLElement).focus();
+            }
+        }
+    }
     
     React.useEffect(() => {
         if (enabled && root.current) {
             switch (keyboard.key) {
                 case nextKey:
-                    setSelectedIndex(Math.min(selectedIndex + 1, root.current.childElementCount - 1));
+                    var index = Math.min(selectedIndex + 1, root.current.childElementCount - 1);  
+                    setSelectedIndex(index);
+                    focusSelected(index)
                     break;
                 case prevKey:
-                    setSelectedIndex(Math.max(selectedIndex - 1, 0));
+                    var index = Math.max(selectedIndex - 1, 0);
+                    setSelectedIndex(index);
+                    focusSelected(index)
                     break;
                 case "Enter":
                     handleEnter();

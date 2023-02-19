@@ -80,6 +80,7 @@ const Todos = ({ boardId }: { boardId: string }) => {
                 {todos.map((todo: Todo, index: number) => {
                     return (
                         <li 
+                            tabIndex={-1}
                             key={todo.uid} 
                             className={clsx(
                                 selectedIndex === index && "bg-rose-200",
@@ -90,10 +91,11 @@ const Todos = ({ boardId }: { boardId: string }) => {
                                 {todo.title}
                             </span>
                             <span>
-                                <button onClick={() => handleDeleteTodo(index)}>
+                                <button tabIndex={-1} onClick={() => handleDeleteTodo(index)}>
                                     Delete
                                 </button>
-                                <input 
+                                <input
+                                    tabIndex={-1}
                                     type="checkbox" 
                                     name="status" 
                                     checked={todo.status === TodoStatus.Done}
