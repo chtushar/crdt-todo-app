@@ -18,18 +18,11 @@ export const useKeyboardNavigation = ({
     const root = React.useRef<HTMLElement>(null);
     const [keyboard] = useAtom(keyboardAtom);
     const [selectedIndex, setSelectedIndex] = React.useState(defaultSelectedIndex);
-
     
     const handleSelect = (index: number) => {
         setSelectedIndex(index);
     }
-    
-    const handleEnter = () => {
-        if (selectedIndex !== -1) {            
-            onEnter?.(selectedIndex);
-        }
-    }
-    
+
     const reset = () => {
         setSelectedIndex(defaultSelectedIndex);
     }
@@ -47,7 +40,7 @@ export const useKeyboardNavigation = ({
         if (enabled && root.current) {
             switch (keyboard.key) {
                 case nextKey:
-                    var index = Math.min(selectedIndex + 1, root.current.childElementCount - 1);  
+                    var index = Math.min(selectedIndex + 1, root.current.childElementCount - 1);
                     setSelectedIndex(index);
                     focusSelected(index)
                     break;
@@ -56,8 +49,6 @@ export const useKeyboardNavigation = ({
                     setSelectedIndex(index);
                     focusSelected(index)
                     break;
-                case "Enter":
-                    handleEnter();
                 default:
                     break;
             }

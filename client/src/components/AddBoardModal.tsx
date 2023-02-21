@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import Form from './Form';
+import Form from './Form/Form';
 
 const AddBoardModal = ({ onSubmit }:{ onSubmit: (title: string) => void }) => {
     const [isOpen, setIsOpen] = React.useState<boolean>(false);
