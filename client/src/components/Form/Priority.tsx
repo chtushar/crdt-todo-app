@@ -16,6 +16,14 @@ const Priority = ({ onChange, value }:{ onChange?: any; value?: TodoPriority }) 
         }
         setCurrentValue(value);
     }
+    const reset = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (onChange) {
+            onChange({ priority: '' });
+            return;
+        }
+        setCurrentValue('');
+    }
     return (
         <Select
             name="priority"
@@ -23,6 +31,7 @@ const Priority = ({ onChange, value }:{ onChange?: any; value?: TodoPriority }) 
             values={values} 
             onValueChange={handleValueChange}
             placeholder="Priority..."
+            reset={reset}
         />
         
     )

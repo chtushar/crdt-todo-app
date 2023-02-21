@@ -1,6 +1,7 @@
 export enum TodoStatus {
     Todo = 'todo',
-    Done = 'done'
+    Pending = 'pending',
+    Completed = 'completed'
 } 
 
 export enum TodoPriority {
@@ -18,4 +19,5 @@ export interface Todo {
     assigned_user: string | null;
     date: number | null;
     boardId: string;
+    sorted?: boolean;
 }

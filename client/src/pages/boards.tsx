@@ -15,7 +15,7 @@ const Boards = ({ user }:{ user: User & { username: string } }) => {
         <>
             <div className="w-full">
                 {/* {user.id} */}
-                <div className="w-full h-full flex flex-col gap-8 overflow-clip">
+                <div className="w-full h-full flex flex-col gap-8">
                     <Todos boardId="todos" username={user.username} />
                 </div>
             </div>

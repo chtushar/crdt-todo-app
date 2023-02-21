@@ -1,6 +1,8 @@
 import React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Listbox } from '@headlessui/react';
+import { XCircleIcon } from '@heroicons/react/24/outline';
+import clsx from "clsx";
 
 const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof SelectPrimitive.Item>>((props, forwardedRef) => {
     return (
@@ -14,21 +16,29 @@ const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof 
 
 SelectItem.displayName = "SelectItem"
 
+const SELECT_BUTTON_STYLES = {
+    default: "relative z-0 flex justify-between items-center cursor-pointer rounded-lg bg-white text-left focus:outline-none w-[96px] px-2 py-1 border border-solid border-neutral-200 text-sm text-neutral-600",
+    focus: "focus:border-blue-300"
+}
+
 const Select = ({
     name,
     values = [],
     value,
     onValueChange,
     placeholder,
-    reset
+    reset,
+    onOpenChange,
+    defaultValue,
 }: {
     name?: string;
     value?: string;
     values?: Array<{ label: string, value: string }>;
     defaultValue?: string;
     onValueChange?: (value: string) => void;
+    onOpenChange?: () => void;
     placeholder?: string;
-    reset?: () => void;
+    reset?: (e: React.MouseEvent) => void;
 }) => {
     return (
         <div>
@@ -38,12 +48,27 @@ const Select = ({
                 onChange={onValueChange}
             >
                 <div className="relative mt-1">
-                    <Listbox.Button 
-                        className="relative cursor-default rounded-lg bg-white text-left focus:outline-none w-[80px] px-2 py-1 border border-solid border-neutral-200 text-sm text-neutral-600"
+                    <Listbox.Button
+                        onClick={onOpenChange}
+                        className={clsx(
+                            SELECT_BUTTON_STYLES.default,
+                            SELECT_BUTTON_STYLES.focus
+                        )}
                     >
-                        {value ? values.find(({ value: v }) => v === value)?.label : placeholder}
+                        {value ?
+                            <>
+                                <span>
+                                    {values.find(({ value: v }) => v === value)?.label}
+                                </span>
+                                {reset && defaultValue !== value && (
+                                    <span onClick={reset}>
+                                        <XCircleIcon className="w-4 h-4" />
+                                    </span>
+                                )}
+                            </> 
+                        : placeholder}
                     </Listbox.Button>
-                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                         {values.map(({ label, value }) => (
                             <Listbox.Option 
                                 key={value} 

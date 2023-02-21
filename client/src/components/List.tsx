@@ -6,23 +6,25 @@ import { Reorder } from 'framer-motion'
 export interface ListProps {
     todos: Todo[];
     selectedIndex: number;
-    toggleCheckbox: (todo: Todo, index: number) => void;
+    handleUpdateTodo: (todo: Todo, index: number) => void;
     handleDelete: (index: number) => void;
     handleSelect: (index: number) => void;
+    currentUser: { label: string; value: string };
 }
 
 const List = React.forwardRef(({ 
         todos,
         selectedIndex,
-        toggleCheckbox,
+        handleUpdateTodo,
         handleDelete: handleDeleteTodo,
-        handleSelect
+        handleSelect,
+        currentUser
     }: ListProps, ref) => {
     return (
         <Reorder.Group 
             values={todos.map((todo) => todo.uid)} 
             onReorder={() => null} ref={ref as React.RefObject<HTMLUListElement>}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-4"
         >
             {todos.map((todo: Todo, index: number) => {
                 return (
@@ -31,9 +33,10 @@ const List = React.forwardRef(({
                         todo={todo}
                         selected={index === selectedIndex}
                         index={index}
-                        toggleCheckbox={toggleCheckbox}
+                        handleUpdateTodo={handleUpdateTodo}
                         handleDelete={handleDeleteTodo}
                         onSelect={handleSelect}
+                        currentUser={currentUser}
                     />
                 )
             })}

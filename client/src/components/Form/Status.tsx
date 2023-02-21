@@ -5,7 +5,8 @@ import Select from "../Select";
 const Status = ({ value, onChange }:{ value?: TodoStatus; onChange?: (arg: any) => void }) => {
     const statuses = [
         { label: "Todo", value: TodoStatus.Todo },
-        { label: "Done", value: TodoStatus.Done },
+        { label: "Pending", value: TodoStatus.Pending },
+        { label: "Completed", value: TodoStatus.Completed },
     ]
     const [status, setStatus] = React.useState<string | undefined>(TodoStatus.Todo);
 
@@ -24,6 +25,7 @@ const Status = ({ value, onChange }:{ value?: TodoStatus; onChange?: (arg: any) 
             value={value ?? status}
             onValueChange={handleValueChange}
             placeholder="Status..."
+            defaultValue={TodoStatus.Todo}
         />
     );
 }

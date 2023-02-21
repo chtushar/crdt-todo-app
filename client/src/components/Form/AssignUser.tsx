@@ -38,15 +38,24 @@ const AssignUser = ({ currentUser, value, onChange }:{ currentUser: Value; value
         }
         setCurrentValue(value);
     }
+
+    const reset = () => {
+        if (onChange) {
+            onChange({ assigned_user: undefined });
+            return;
+        }
+        setCurrentValue('');
+    }
     
     return (
         <Select
             name="assignee"
-            onOpenChange={fetchUsers} 
+            onOpenChange={() => fetchUsers(true)} 
             value={value ?? currentValue}
             values={values} 
             onValueChange={handleValueChange}
             placeholder="Assign..."
+            reset={reset}
         />
         
     )

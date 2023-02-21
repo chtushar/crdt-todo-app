@@ -30,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
     }, [])
 
     return (
-        <div className="flex my-0 mx-auto w-full max-w-[500px] pt-[150px] h-full">
+        <div className="flex my-0 mx-auto w-full max-w-[600px] pt-[150px] h-full p-4">
             {children}
         </div>
     )

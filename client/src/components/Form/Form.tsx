@@ -10,6 +10,9 @@ const FORM_CARD_STYLES = {
     transition: "transition-all duration-300 ease-in-out",
     focus: "focus-within:border-blue-300"
 }
+const PRIMARY_BUTTON_STYLES = {
+    default: "px-3 py-1 text-sm bg-indigo-600 rounded-md text-white min-w-[100px]"
+}
 
 const Form = ({ 
         username,
@@ -42,13 +45,13 @@ const Form = ({
         )}>
             <form onSubmit={handleSubmit}>
                 <input name="title" className="p-2 w-full outline-none" type="text" placeholder="Title" />
-                <div className="p-2 flex justify-between">
+                <div className="p-2 flex flex-col md:flex-row md:justify-between gap-4">
                     <div className="flex gap-2 items-baseline">
                         <AssignUser currentUser={{ label: username, value: userId || '' }} />
                         <Priority />
                         <DateField />
                     </div>
-                    <button type="submit" className="px-3 py-1 text-sm bg-indigo-600 rounded-md text-white">
+                    <button type="submit" className={clsx(PRIMARY_BUTTON_STYLES.default)}>
                         Add
                     </button>
                 </div>

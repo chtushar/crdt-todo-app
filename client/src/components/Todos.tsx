@@ -13,7 +13,6 @@ const Form = dynamic(() => import('./Form/Form'), { ssr: false })
 
 const Todos = ({ boardId, username }: { boardId: string; username: string }) => {
     const { array, yDoc } = useDocArray<Todo>(`${boardId}`)
-    const textbarRef = React.useRef<HTMLInputElement>(null)
     const user = useUser();
     
     const handleAddTodo = ({
@@ -38,41 +37,32 @@ const Todos = ({ boardId, username }: { boardId: string; username: string }) => 
     const handleDeleteTodo = (index: number) => {
         array.delete(index)
     }
-    
-    const toggleCheckbox = (todo: Todo) => {
+
+    const handleUpdateTodo = (todo: Todo) => {
         const oldTodo = array.toArray().find(t => t.uid === todo.uid) as Todo
         const newTodo = {
             ...oldTodo,
-            status: todo.status === TodoStatus.Todo ? TodoStatus.Done : TodoStatus.Todo
+            ...todo
         }
-        
         yDoc.transact(() => {
             array.delete(todo.index as number)
             array.insert((todo.index as number) , [newTodo])
         })
-
-        document.activeElement && (document.activeElement as HTMLElement).blur()
     }
+    
+    const { selectedIndex, ref, handleSelect } = useKeyboardNavigation({
+        enabled: true,
+        defaultSelectedIndex: -1,
+    })
     
     const [filters, setFilters] = React.useState<FiltersProps['filters']>({ 
         status: TodoStatus.Todo,
         priority: undefined,
         assigned_user: undefined 
     })
+    
     const todos = array.toArray().map((todo, index) => ({ ...todo, index }));
     
-
-    const { selectedIndex, ref, reset, handleSelect } = useKeyboardNavigation({
-        enabled: true,
-        defaultSelectedIndex: -1,
-        onEnter: (index: number) => {
-            if (textbarRef.current !== document.activeElement) {
-                const todo = todos[index]
-                toggleCheckbox(todo)
-            }
-        }
-    })
-
     const sortedTodos = React.useMemo(() => {
         const filteredTodos = todos.filter(todo => {
             if (filters.status && todo.status !== filters.status) return false
@@ -80,32 +70,18 @@ const Todos = ({ boardId, username }: { boardId: string; username: string }) => 
             if (filters.assigned_user && todo.assigned_user !== filters.assigned_user) return false
             return true
         })
-        return filteredTodos.sort((a, b) => {
-            if (a.status === TodoStatus.Todo && b.status === TodoStatus.Done) return -1
-            if (a.status === TodoStatus.Done && b.status === TodoStatus.Todo) return 1
-            if (a.priority && b.priority) {
-                if (a.priority > b.priority) return -1
-                if (a.priority < b.priority) return 1
-            }
-            if (a.date && b.date) {
-                if (a.date > b.date) return 1
-                if (a.date < b.date) return -1
-            }
-            return 0
-        })
+        return filteredTodos
     }, [todos, filters])
+
+    const currentUser = { label: username, value: user?.id ?? '' }
 
     return (
         <>
-            {/* <Form
-                onSubmit={handleAddTodo}
-                textbarRef={textbarRef}
-            /> */}
-                <Form 
-                    username={username}
-                    userId={user?.id ?? ''}
-                    handleAddTodo={handleAddTodo} 
-                />
+            <Form 
+                username={username}
+                userId={user?.id ?? ''}
+                handleAddTodo={handleAddTodo} 
+            />
             <div className="flex flex-col gap-2">
                 <Filters 
                     filters={filters}
@@ -113,12 +89,13 @@ const Todos = ({ boardId, username }: { boardId: string; username: string }) => 
                     currentUser={{ label: username, value: user?.id ?? '' }} 
                 />
                 <List
-                todos={sortedTodos}
-                selectedIndex={selectedIndex}
-                toggleCheckbox={toggleCheckbox}
-                handleDelete={handleDeleteTodo}
-                handleSelect={handleSelect}
-                ref={ref}   
+                    todos={[...sortedTodos]}
+                    ref={ref}
+                    currentUser={currentUser}
+                    selectedIndex={selectedIndex}
+                    handleUpdateTodo={handleUpdateTodo}
+                    handleDelete={handleDeleteTodo}
+                    handleSelect={handleSelect}
                 />
             </div>
         </>
