@@ -14,7 +14,7 @@ export const useYDocProviders = <T>(room: string, yDoc: Doc) => {
         if (!docInitiated.current && typeof yDoc !== 'undefined') {
             docInitiated.current = true;
             indexeddbPersistence.current = new IndexeddbPersistence(room, yDoc);
-            websocketProvider.current = new WebsocketProvider("ws://localhost:1234", room, yDoc);
+            websocketProvider.current = new WebsocketProvider(process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? "ws://localhost:1234", room, yDoc);
         }
 
         return () => {

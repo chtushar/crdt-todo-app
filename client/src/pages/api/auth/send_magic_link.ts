@@ -11,7 +11,7 @@ const sendMagicLink = async (req: NextApiRequest, res: NextApiResponse) => {
         await supabase.auth.signInWithOtp({ 
             email: req.body.email,
             options: {
-                emailRedirectTo: 'http://localhost:3000/boards',
+                emailRedirectTo: process.env.NEXT_PUBLIC_ROOT_URL + '/boards',
             }
         })
     
