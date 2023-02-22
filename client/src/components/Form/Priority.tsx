@@ -4,9 +4,9 @@ import { TodoPriority } from "@/types";
 
 const Priority = ({ onChange, value }:{ onChange?: any; value?: TodoPriority }) => {
     const values = [
-        { label: "Low", value: TodoPriority.Low, styles: "text-blue-600" },
-        { label: "Medium", value: TodoPriority.Medium, styles: "text-yellow-600" },
-        { label: "High", value: TodoPriority.High, styles: "text-red-600" }
+        { label: "Low", value: TodoPriority.Low },
+        { label: "Medium", value: TodoPriority.Medium },
+        { label: "High", value: TodoPriority.High }
     ];
     const [currentValue, setCurrentValue] = React.useState<string | undefined>('');
     const handleValueChange = (value: string) => {

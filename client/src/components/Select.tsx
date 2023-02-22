@@ -3,6 +3,8 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { Listbox } from '@headlessui/react';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import clsx from "clsx";
+import { TodoPriority, TodoStatus } from "@/types";
+import Priority from "./Form/Priority";
 
 const SelectItem = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof SelectPrimitive.Item>>((props, forwardedRef) => {
     return (
@@ -54,7 +56,12 @@ const Select = ({
                         className={clsx(
                             SELECT_BUTTON_STYLES.default,
                             SELECT_BUTTON_STYLES.focus,
-                            selectedValue?.styles,
+                            value === TodoStatus.Todo && "text-blue",
+                            value === TodoStatus.Pending && "text-yellow",
+                            value === TodoStatus.Completed && "text-green",
+                            value === TodoPriority.Low && "text-blue",
+                            value === TodoPriority.Medium && "text-yellow",
+                            value === TodoPriority.High && "text-red",
                         )}
                     >
                         {value ?

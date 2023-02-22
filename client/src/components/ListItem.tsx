@@ -9,6 +9,7 @@ import AssignUser from './Form/AssignUser'
 import Priority from './Form/Priority'
 import Status from './Form/Status'
 import DateField from './Form/DateField'
+import { TrashIcon } from '@heroicons/react/24/outline'
 
 
 interface ListItemProps {
@@ -22,7 +23,7 @@ interface ListItemProps {
 }
 
 const LIST_ITEM_STYLES = {
-    default: "p-4 outline-none border border-neutral-200 border-solid rounded-xl",
+    default: "p-4 outline-none border border-neutral-200 border-solid rounded-xl flex flex-col",
     focus: "focus-within:border-blue-300"
 }
 
@@ -73,9 +74,6 @@ const ListItem = ({
         }
     }, [selected, keyboard,])
 
-    const isFocused = selected && todoItemRef.current === document.activeElement;
-
-
     return (
         <Reorder.Item
             value={todo.uid}
@@ -92,25 +90,35 @@ const ListItem = ({
             <span className='text-neutral-600'>
                 {todo.title}
             </span>
-            <Status
-                value={todo.status ?? undefined}
-                onChange={handleStatus}
-            />
+            <div className='flex gap-2 items-center'>
+                <Status
+                    value={todo.status ?? undefined}
+                    onChange={handleStatus}
+                />
+                <button className='block md:hidden' onClick={() => handleDelete(todo.index ?? -1)}>
+                    <TrashIcon className='h-6 w-6 text-neutral-400 hover:text-neutral-600' />
+                </button>
+            </div>
         </div>
-        <div className='pt-4 flex items-baseline gap-2'>
-            <AssignUser 
-                currentUser={currentUser} 
-                value={todo.assigned_user ?? ''} 
-                onChange={handleAssignUser}  
-            />
-            <Priority
-                value={todo.priority ?? undefined}
-                onChange={handlePriority}
-            />
-            <DateField
-                value={todo.date ?? undefined}
-                onChange={handleDate}
-            />
+        <div className='pt-4 flex justify-between'>
+            <div className='flex items-baseline gap-2 w-full'>
+                <AssignUser 
+                    currentUser={currentUser} 
+                    value={todo.assigned_user ?? ''} 
+                    onChange={handleAssignUser}  
+                />
+                <Priority
+                    value={todo.priority ?? undefined}
+                    onChange={handlePriority}
+                />
+                <DateField
+                    value={todo.date ?? undefined}
+                    onChange={handleDate}
+                />
+            </div>
+            <button className='hidden md:block' onClick={() => handleDelete(todo.index ?? -1)}>
+                <TrashIcon className='h-6 w-6 text-neutral-400 hover:text-neutral-600' />
+            </button>
         </div>
     </Reorder.Item>
     )

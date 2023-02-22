@@ -31,7 +31,10 @@ const Filters = ({ currentUser, filters, setFilters }: FiltersProps) => {
     }
     
     return (
-        <form ref={formRef} className="w-full flex justify-end gap-2">
+        <form ref={formRef} className="w-full flex md:justify-end gap-2 items-baseline">
+            <span className="text-neutral-500 mr-2">
+                Filters:
+            </span>
             <AssignUser currentUser={currentUser} value={filters.assigned_user} onChange={handleChange} />
             <Priority value={filters.priority} onChange={handleChange} />
             <Status value={filters.status} onChange={handleChange} />

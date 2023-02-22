@@ -82,7 +82,7 @@ const Todos = ({ boardId, username }: { boardId: string; username: string }) => 
                 userId={user?.id ?? ''}
                 handleAddTodo={handleAddTodo} 
             />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 pb-8">
                 <Filters 
                     filters={filters}
                     setFilters={setFilters}

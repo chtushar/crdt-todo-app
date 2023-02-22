@@ -1,7 +1,6 @@
 import React from "react";
 import uniqBy from "lodash/uniqBy";
 import useSwr, { preload } from "swr";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 import Select from "../Select";
 
@@ -22,8 +21,7 @@ const fetcher = async (url: string) => {
 preload('/api/users/all', fetcher);
 
 const AssignUser = ({ currentUser, value, onChange }:{ currentUser: Value; value?: string; onChange?: (arg: any) => void }) => {
-    const [values, setValues] = React.useState<Array<Value>>([currentUser]);
-    const supabase = useSupabaseClient();
+    const [values] = React.useState<Array<Value>>([currentUser]);
     const [currentValue, setCurrentValue] = React.useState<string | undefined>('');
     const { data } = useSwr('/api/users/all', fetcher, { refreshInterval: 20 * 1000 });
 

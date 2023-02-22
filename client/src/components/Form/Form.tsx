@@ -10,9 +10,6 @@ const FORM_CARD_STYLES = {
     transition: "transition-all duration-300 ease-in-out",
     focus: "focus-within:border-blue-300"
 }
-const PRIMARY_BUTTON_STYLES = {
-    default: "px-3 py-1 text-sm bg-indigo-600 rounded-md text-white min-w-[100px]"
-}
 
 
 const Form = ({ 
@@ -52,7 +49,7 @@ const Form = ({
                         <Priority />
                         <DateField />
                     </div>
-                    <button type="submit" className={clsx(PRIMARY_BUTTON_STYLES.default)}>
+                    <button type="submit" className={clsx('primary-btn', 'min-w-[100px]')}>
                         Add
                     </button>
                 </div>
