@@ -10,12 +10,17 @@ interface Value {
 }
 
 const fetcher = async (url: string) => {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data?.map(({ id, username }: any) => ({
-        label: username,
-        value: id
-    }));
+    try {
+        const res = await fetch(process.env.NEXT_PUBLIC_ROOT_URL + url);
+        const data = await res.json();
+        return data?.map(({ id, username }: any) => ({
+            label: username,
+            value: id
+        }));
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
 }
 
 preload('/api/users/all', fetcher);
