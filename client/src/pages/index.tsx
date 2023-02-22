@@ -7,19 +7,24 @@ import clsx from "clsx"
 
 export default function Home({ initialSession }: { initialSession: any }) {
   const [emailSent, setEmailSent] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const data = new FormData(event.target as HTMLFormElement)
     const email = data.get('email')
-    try {
-      await axios.post("/api/auth/send_magic_link", {
-        email,
-      })
-      setEmailSent(true)
-    } catch (error) {
-      // Sentry goes here in production
-      console.log(error)
+    if (!isLoading) {
+      try {
+        setIsLoading(true)
+        await axios.post("/api/auth/send_magic_link", {
+          email,
+        })
+        setEmailSent(true)
+      } catch (error) {
+        // Sentry goes here in production
+        setIsLoading(false)
+        console.log(error)
+      }
     }
   }
 
@@ -33,9 +38,10 @@ export default function Home({ initialSession }: { initialSession: any }) {
               name="email"
               className="input-text" 
               placeholder="Your Email"
+              disabled={isLoading}
               required
             />
-            <button type="submit" className="primary-btn self-stretch">Send Magic link</button>
+            <button type="submit" className="primary-btn self-stretch">{isLoading ? 'Sending...': 'Send Magic link'}</button>
           </form>
         }
         {emailSent &&
