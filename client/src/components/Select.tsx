@@ -33,13 +33,14 @@ const Select = ({
 }: {
     name?: string;
     value?: string;
-    values?: Array<{ label: string, value: string }>;
+    values?: Array<{ label: string, value: string, styles?: string }>;
     defaultValue?: string;
     onValueChange?: (value: string) => void;
     onOpenChange?: () => void;
     placeholder?: string;
     reset?: (e: React.MouseEvent) => void;
 }) => {
+    const selectedValue = values.find(({ value: v }) => v === value);
     return (
         <div>
             <Listbox
@@ -52,30 +53,38 @@ const Select = ({
                         onClick={onOpenChange}
                         className={clsx(
                             SELECT_BUTTON_STYLES.default,
-                            SELECT_BUTTON_STYLES.focus
+                            SELECT_BUTTON_STYLES.focus,
+                            selectedValue?.styles,
                         )}
                     >
                         {value ?
                             <>
                                 <span>
-                                    {values.find(({ value: v }) => v === value)?.label}
+                                    {selectedValue?.label}
                                 </span>
                                 {reset && defaultValue !== value && (
                                     <span onClick={reset}>
-                                        <XCircleIcon className="w-4 h-4" />
+                                        <XCircleIcon className="w-4 h-4 stroke-red-600" />
                                     </span>
                                 )}
                             </> 
                         : placeholder}
                     </Listbox.Button>
                     <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {values.map(({ label, value }) => (
+                        {values.map(({ label, value, styles }) => (
                             <Listbox.Option 
                                 key={value} 
                                 value={value}
-                                className="relative cursor-default select-none p-2 text-gray-900"
+                                as={React.Fragment}
                             >
-                                {label}
+                                {({ active }) => (
+                                    <li className={clsx(
+                                        "relative cursor-default select-none p-1 text-gray-900 rounded m-1",
+                                        active && "bg-indigo-400 text-white",
+                                    )}>
+                                        {label}
+                                    </li>
+                                )}
                             </Listbox.Option>
                         ))}
 

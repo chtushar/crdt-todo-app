@@ -1,4 +1,6 @@
 import React from "react";
+import uniqBy from "lodash/uniqBy";
+import useSwr, { preload } from "swr";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 import Select from "../Select";
@@ -8,28 +10,22 @@ interface Value {
     value: string;
 }
 
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data?.map(({ id, username }: any) => ({
+        label: username,
+        value: id
+    }));
+}
+
+preload('/api/users/all', fetcher);
+
 const AssignUser = ({ currentUser, value, onChange }:{ currentUser: Value; value?: string; onChange?: (arg: any) => void }) => {
     const [values, setValues] = React.useState<Array<Value>>([currentUser]);
     const supabase = useSupabaseClient();
     const [currentValue, setCurrentValue] = React.useState<string | undefined>('');
-    
-    const fetchUsers = async (open: boolean) => {
-        try {
-            if (open) {
-                const  { data } = await supabase.from("user_settings").select("*");
-                const val = data?.map(({ id, username }) => ({
-                    label: username,
-                    value: id
-                })).filter(({ value }) => value !== currentUser.value);
-
-                if (val) {
-                    setValues([currentUser, ...val]);
-                }
-            }
-        } catch (error) {
-            
-        }
-    }
+    const { data } = useSwr('/api/users/all', fetcher, { refreshInterval: 20 * 1000 });
 
     const handleValueChange = (value: string) => {
         if (onChange) {
@@ -50,9 +46,8 @@ const AssignUser = ({ currentUser, value, onChange }:{ currentUser: Value; value
     return (
         <Select
             name="assignee"
-            onOpenChange={() => fetchUsers(true)} 
             value={value ?? currentValue}
-            values={values} 
+            values={uniqBy([...values, ...(data ?? [])], 'value')} 
             onValueChange={handleValueChange}
             placeholder="Assign..."
             reset={reset}

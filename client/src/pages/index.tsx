@@ -4,42 +4,76 @@ import { createServerSupabaseClient, User } from "@supabase/auth-helpers-nextjs"
 import type { GetServerSidePropsContext } from "next"
 import axios from "axios"
 import { useSupabaseClient } from "@supabase/auth-helpers-react"
+import clsx from "clsx"
+
+const FORM_STYLES = {
+  default: "p-4 w-fit h-fit flex flex-col items-center gap-2 shadow-md border border-neutral-200 rounded-md"
+}
+
+const INPUT_STYLES = {
+  default: "border border-neutral-200 p-2 rounded-md"
+}
 
 export default function Home({ initialSession }: { initialSession: any }) {
   const router = useRouter()
   const supabase = useSupabaseClient();
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const data = new FormData(event.target as HTMLFormElement)
     const email = data.get('email')
-    await axios.post("/api/auth/send_magic_link", {
-      email,
-    })
+    try {
+      await axios.post("/api/auth/send_magic_link", {
+        email,
+      })
+    } catch (error) {
+      // Sentry goes here in production
+      console.log(error)
+    }
   }
+
   const handleSetUsername = async (event: React.FormEvent) => {
     try {
       const data = new FormData(event.target as HTMLFormElement)
       const username = data.get('username')
-      const { error } = await supabase.from('user_settings').update({
+      await supabase.from('user_settings').update({
         username,
         is_onboarded: true,
       }).eq('id', initialSession.user.id);
       router.push('/boards')
     } catch (error) {
+      // Sentry goes here in production
       console.log(error)
     }
   }
+
   return (
     <>
-      <main>
+      <main className="w-full flex flex-col justify-center items-center">
         {initialSession?.user ? 
-          <form className="flex gap-2" onSubmit={handleSetUsername}>
-            <input type="text" name="username" />
+          <form className={clsx(
+            FORM_STYLES.default,
+          )} onSubmit={handleSetUsername}>
+            <input 
+              type="text" 
+              name="username" 
+              className={clsx(
+                INPUT_STYLES.default,
+              )} 
+            />
             <button type="submit">Submit</button>
           </form> 
         : (
-          <form className="flex gap-2" onSubmit={handleSubmit}>
-            <input type="email" name="email" />
+          <form className={clsx(
+            FORM_STYLES.default,
+          )} onSubmit={handleSubmit}>
+            <input 
+              type="email" 
+              name="email"
+              className={clsx(
+                INPUT_STYLES.default,
+              )} 
+            />
             <button type="submit">Send Magic link</button>
           </form>
         )}
